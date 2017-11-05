@@ -2,7 +2,8 @@
 (ns preview.handler.example
   (:require [compojure.core :refer :all]
             [clojure.java.io :as io]
-            [integrant.core :as ig])
+            [integrant.core :as ig]
+            [me.raynes.fs :as fs])
   (:import [java.io File]))
 
 (def config
@@ -17,7 +18,10 @@
   (context "/" []
            ;; Listing of repositories
            (GET "/" []
-                (io/resource "preview/handler/example/example.html"))
+                (let [repos (filter (fn [x] (fs/exists? (fs/file x "index.html")))
+                                    (fs/list-dir repository-root))]
+                  ;; FIXME: Show proper links to projects
+                  repos))
 
            ;; Repository view
            (GET "/repository/*" {{file-path :*} :route-params}
