@@ -4,7 +4,8 @@
             [clojure.java.io :as io]
             [integrant.core :as ig]
             [me.raynes.fs :as fs]
-            [net.cgrand.enlive-html :as html])
+            [net.cgrand.enlive-html :as html]
+            [clj-jgit.porcelain :as git])
   (:import [java.io File]))
 
 (def config
@@ -26,6 +27,19 @@
    :attrs {:class "repo"}
    :content [(make-repo-link repo-path)]})
 
+(defn- insert-preview-banner [f]
+  (html/deftemplate index-page f [s]
+    [:body] (html/append s))
+  (html/defsnippet banner-template "../resources/preview/handler/example/banner.html"
+    [:#preview-banner]
+    [repo-name branch-name]
+    [:#repo-name] (html/content repo-name)
+    [:#branch-name] (html/content branch-name))
+  (let [repo-path (fs/parent f)
+        repo-name (fs/base-name repo-path)
+        branch (git/with-repo repo-path (git/git-branch-current repo))]
+    (index-page (banner-template repo-name branch))))
+
 (html/deftemplate main-template "../resources/preview/handler/example/example.html"
   [repos]
   [:head :title] (html/content "Watched Repositories")
@@ -44,4 +58,7 @@
            ;; Repository view
            (GET "/repository/*" {{file-path :*} :route-params}
                 (when (fs/exists? (File. repository-root file-path))
-                  (File. repository-root file-path)))))
+                  (let [f (io/file repository-root file-path)]
+                    (if (= (fs/extension file-path) ".html")
+                      (insert-preview-banner f)
+                      f))))))

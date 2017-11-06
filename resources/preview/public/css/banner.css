@@ -1,0 +1,10 @@
+#preview-banner {
+    display: block;
+    position: fixed;
+    background: white;
+    bottom: 0px;
+    width: 100%;
+    height: 65px;
+    padding: 20px;
+    border-top: grey solid 1px;
+}
