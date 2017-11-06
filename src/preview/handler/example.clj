@@ -21,11 +21,16 @@
         url (str "/repository/" name "/index.html")]
     {:tag :a :attrs {:href url} :content name}))
 
+(defn- make-repo-div [repo-path]
+  {:tag :div
+   :attrs {:class "repo"}
+   :content [(make-repo-link repo-path)]})
+
 (html/deftemplate main-template "../resources/preview/handler/example/example.html"
   [repos]
   [:head :title] (html/content "Watched Repositories")
   [:body :h1] (html/content "Watched Repositories")
-  [:body] (html/append (map make-repo-link repos)))
+  [:#repositories] (html/content (map make-repo-div repos)))
 
 (defmethod ig/init-key :preview.handler/example [_ options]
   (context "/" []
@@ -38,4 +43,5 @@
 
            ;; Repository view
            (GET "/repository/*" {{file-path :*} :route-params}
-                (File. repository-root file-path))))
+                (when (fs/exists? (File. repository-root file-path))
+                  (File. repository-root file-path)))))
