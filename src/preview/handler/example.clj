@@ -5,7 +5,8 @@
             [integrant.core :as ig]
             [me.raynes.fs :as fs]
             [net.cgrand.enlive-html :as html]
-            [clj-jgit.porcelain :as git])
+            [clj-jgit.porcelain :as git]
+            [clojure.string :as str])
   (:import [java.io File]))
 
 (def config
@@ -27,18 +28,31 @@
    :attrs {:class "repo"}
    :content [(make-repo-link repo-path)]})
 
+(defn- make-branch-option [branch]
+  {:tag :option
+   :attrs {:value branch}
+   :content branch})
+
 (defn- insert-preview-banner [f]
   (html/deftemplate index-page f [s]
     [:body] (html/append s))
   (html/defsnippet banner-template "../resources/preview/handler/example/banner.html"
     [:#preview-banner]
-    [repo-name branch-name]
+    [repo-name branch-name branches]
     [:#repo-name] (html/content repo-name)
-    [:#branch-name] (html/content branch-name))
+    [:#branch-name] (html/content branch-name)
+    [:#select-branch] (html/append
+                       (map (fn [x]
+                              (-> x
+                                  .getName
+                                  (str/replace "refs/heads/" "")
+                                  make-branch-option))
+                            branches)))
   (let [repo-path (fs/parent f)
         repo-name (fs/base-name repo-path)
-        branch (git/with-repo repo-path (git/git-branch-current repo))]
-    (index-page (banner-template repo-name branch))))
+        branch (git/with-repo repo-path (git/git-branch-current repo))
+        branches (git/with-repo repo-path (git/git-branch-list repo))]
+    (index-page (banner-template repo-name branch branches))))
 
 (html/deftemplate main-template "../resources/preview/handler/example/example.html"
   [repos]
