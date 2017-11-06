@@ -6,6 +6,7 @@
                  [duct/core "0.6.1"]
                  [duct/module.logging "0.3.1"]
                  [duct/module.web "0.6.3"]
+                 [enlive "1.1.6"]
                  [me.raynes/fs "1.4.6"]]
   :plugins [[duct/lein-duct "0.10.4"]]
   :main ^:skip-aot preview.main

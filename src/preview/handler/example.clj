@@ -3,7 +3,8 @@
   (:require [compojure.core :refer :all]
             [clojure.java.io :as io]
             [integrant.core :as ig]
-            [me.raynes.fs :as fs])
+            [me.raynes.fs :as fs]
+            [net.cgrand.enlive-html :as html])
   (:import [java.io File]))
 
 (def config
@@ -14,14 +15,26 @@
 (when (nil? repository-root)
   (throw (Throwable. "Set :repository-root in dev/resources/local.edn (under :preview.handler/example)")))
 
+
+(defn- make-repo-link [repo-path]
+  (let [name (fs/base-name repo-path)
+        url (str "/repository/" name "/index.html")]
+    {:tag :a :attrs {:href url} :content name}))
+
+(html/deftemplate main-template "../resources/preview/handler/example/example.html"
+  [repos]
+  [:head :title] (html/content "Watched Repositories")
+  [:body :h1] (html/content "Watched Repositories")
+  [:body] (html/append (map make-repo-link repos)))
+
 (defmethod ig/init-key :preview.handler/example [_ options]
   (context "/" []
            ;; Listing of repositories
            (GET "/" []
                 (let [repos (filter (fn [x] (fs/exists? (fs/file x "index.html")))
-                                    (fs/list-dir repository-root))]
-                  ;; FIXME: Show proper links to projects
-                  repos))
+                                    (fs/list-dir repository-root))
+                      ]
+                  (main-template repos)))
 
            ;; Repository view
            (GET "/repository/*" {{file-path :*} :route-params}
