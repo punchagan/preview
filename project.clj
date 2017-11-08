@@ -5,6 +5,7 @@
   :dependencies [[org.clojure/clojure "1.9.0-beta4"]
                  [clj-jgit "0.8.10"]
                  [duct/core "0.6.1"]
+                 [duct/module.cljs "0.3.1"]
                  [duct/module.logging "0.3.1"]
                  [duct/module.web "0.6.3"]
                  [enlive "1.1.6"]
@@ -16,7 +17,8 @@
   :profiles
   {:dev  [:project/dev :profiles/dev]
    :repl {:prep-tasks   ^:replace ["javac" "compile"]
-          :repl-options {:init-ns user}}
+          :repl-options {:init-ns user
+                         :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
    :uberjar {:aot :all}
    :profiles/dev {}
    :project/dev  {:source-paths   ["dev/src"]

@@ -3,6 +3,7 @@
 
  :duct.module/logging {}
  :duct.module.web/site {}
+ :duct.module/cljs {:main preview.client}
 
  :duct.router/cascading
  [#ig/ref :preview.handler/example]
