@@ -16,16 +16,32 @@
 (defn- page-repo-name []
   (-> (.-href js/location)
       (str/split  #"/")
-      (butlast)
-      (last)))
+      butlast
+      last))
+
+(defn- switch-branch [e]
+  (let [branch (-> e .-target .-value)]
+    (go (let [url (str "/api/branch/" (page-repo-name) "/" branch)
+              response (<! (http/get url {}))]
+          (prn (str "Switching to " branch))
+          (if (= (:status response) 200)
+            (do
+              (reset! data (:body response))
+              (.reload js/location true))
+            ;; FIXME: Better error handling
+            (prn response))))))
 
 ;; -------------------------
 ;; Views
 
-(defn branch-drop-down [branches]
+(defn branch-drop-down [branches current]
   [:select
+   {:on-change switch-branch}
    (for [branch branches]
-     ^{:key branch} [:option {:value branch} branch])])
+     ^{:key branch}
+     (if (= branch current)
+       [:option {:value branch :selected "selected"} branch]
+       [:option {:value branch} branch]))])
 
 (defn commit-navigation [previous next]
   [:span
@@ -34,7 +50,7 @@
 
 (defn home-page [data]
   [:div [:span "Preview"]
-   [branch-drop-down (:branches @data)]
+   [branch-drop-down (:branches @data) (:current-branch @data)]
    [commit-navigation (:previous @data) (:next @data)]])
 
 ;; -------------------------

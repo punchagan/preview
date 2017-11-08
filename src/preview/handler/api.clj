@@ -17,10 +17,21 @@
 (defn- branch-name [branch]
   (-> branch .getName (str/replace "refs/heads/" "")))
 
+(defn- repo-state [repo]
+  (let [branches (map branch-name (git/git-branch-list repo))
+        current-branch (git/git-branch-current repo)]
+    {:branches branches
+     :current-branch current-branch}))
+
 (defmethod ig/init-key :preview.handler/api [_ options]
   (context "/api" []
            (GET "/repo-state/:repo-name" [repo-name]
                 (git/with-repo (str(io/file repository-root repo-name))
-                  (let [branches (map branch-name (git/git-branch-list repo))]
-                    (json-response {:branches branches}))))
+                  (json-response (repo-state repo))))
+
+           ;;FIXME: This should really be a POST - need to fix CSRF
+           (GET "/branch/:repo-name/:branch" [repo-name branch]
+                (git/with-repo (str(io/file repository-root repo-name))
+                  (git/git-checkout repo branch)
+                  (json-response (repo-state repo))))
            ))
