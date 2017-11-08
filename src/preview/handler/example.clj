@@ -1,22 +1,12 @@
 ;;FIXME: Better name for namespace
 (ns preview.handler.example
-  (:require [compojure.core :refer :all]
+  (:require [preview.config :refer :all]
+            [compojure.core :refer :all]
             [clojure.java.io :as io]
             [integrant.core :as ig]
             [me.raynes.fs :as fs]
-            [net.cgrand.enlive-html :as html]
-            [clj-jgit.porcelain :as git]
-            [clojure.string :as str])
+            [net.cgrand.enlive-html :as html])
   (:import [java.io File]))
-
-(def config
-  (ig/read-string (slurp "dev/resources/local.edn")))
-
-(def repository-root (:repository-root (:preview.handler/example config)))
-
-(when (nil? repository-root)
-  (throw (Throwable. "Set :repository-root in dev/resources/local.edn (under :preview.handler/example)")))
-
 
 (defn- make-repo-link [repo-path]
   (let [name (fs/base-name repo-path)
