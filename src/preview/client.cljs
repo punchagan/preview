@@ -36,12 +36,11 @@
 
 (defn branch-drop-down [branches current]
   [:select
-   {:on-change switch-branch}
+   {:on-change switch-branch
+    :value current}
    (for [branch branches]
      ^{:key branch}
-     (if (= branch current)
-       [:option {:value branch :selected "selected"} branch]
-       [:option {:value branch} branch]))])
+     [:option {:value branch} branch])])
 
 (defn commit-navigation [previous next]
   [:span
