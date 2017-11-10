@@ -10,6 +10,7 @@
                  [duct/module.logging "0.3.1"]
                  [duct/module.web "0.6.3"]
                  [enlive "1.1.6"]
+                 [etaoin "0.1.8-SNAPSHOT"]
                  [me.raynes/fs "1.4.6"]
                  [reagent "0.7.0"]]
   :plugins [[duct/lein-duct "0.10.4"]]
