@@ -50,8 +50,7 @@
 
 (defn home-page [data]
   [:div [:span "Preview"]
-   [branch-drop-down (:branches @data) (:current-branch @data)]
-   [commit-navigation (:previous @data) (:next @data)]])
+   [branch-drop-down (:branches @data) (:current-branch @data)]])
 
 ;; -------------------------
 ;; Initialize app
