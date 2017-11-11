@@ -13,17 +13,26 @@
 (defn- branch-name [branch]
   (-> branch .getName (str/replace "refs/heads/" "")))
 
+(defn- branches [repo]
+  (map branch-name (git/git-branch-list repo)))
+
 (defn repo-state [repo-name]
   (with-repo repo-name
-    (let [branches (map branch-name (git/git-branch-list repo))
-          current-branch (git/git-branch-current repo)]
-      {:branches branches
-       :current-branch current-branch})))
+    {:branches (branches repo)
+     :current-branch (git/git-branch-current repo)}))
 
 (defn checkout [repo-name branch]
   (with-repo repo-name
     (git/git-checkout repo branch)
     (repo-state repo-name)))
+
+(defn commits
+  "Return the commits in a repo, per branch"
+  [repo-name]
+  (with-repo repo-name
+    (let [branch-names (branches repo)
+          branch-commits (map #(map branch-name (git/git-log repo %)) branch-names)]
+      (zipmap branch-names branch-commits))))
 
 (defn walk-repo-commits
   "Walk over all commits in the repo, and execute the callable."
