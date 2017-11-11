@@ -47,9 +47,15 @@
    [:span [:a {:href previous} "previous"]]
    [:span [:a {:href next} "next"]]])
 
+(defn screenshots-link []
+  (let [repo-name (page-repo-name)
+        url (str "/screenshots/" repo-name)]
+    [:a {:href url} "Screenshots"]))
+
 (defn home-page [data]
   [:div [:span "Preview"]
-   [branch-drop-down (:branches @data) (:current-branch @data)]])
+   [branch-drop-down (:branches @data) (:current-branch @data)]
+   [screenshots-link]])
 
 ;; -------------------------
 ;; Initialize app
