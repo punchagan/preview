@@ -36,12 +36,13 @@
 ;; Views
 
 (defn branch-drop-down [branches current]
-  [:select
-   {:on-change switch-branch
-    :value current}
-   (for [branch branches]
-     ^{:key branch}
-     [:option {:value branch} branch])])
+  [:span [:span [:em "Switch branch: "]]
+   [:select
+    {:on-change switch-branch
+     :value current}
+    (for [branch branches]
+      ^{:key branch}
+      [:option {:value branch} branch])]])
 
 (defn commit-navigation [previous next]
   [:span
@@ -56,8 +57,14 @@
          :target "_top"}
      "Screenshots"]))
 
+(defn repo-name [name]
+  [:span {:class "repo-name name"} [:u name]])
+
 (defn home-page [data]
-  [:div [:span [:strong "Preview"]]
+  [:div [:span [:strong {:class "name preview-name"}
+                [:a {:href "/"
+                     :target "_top"} "Preview"]]]
+   [repo-name (page-repo-name)]
    [branch-drop-down (:branches @data) (:current-branch @data)]
    [screenshots-link]])
 
