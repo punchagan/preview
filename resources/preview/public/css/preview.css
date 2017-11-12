@@ -1,0 +1,10 @@
+body {
+    width: 60%;
+    max-width: 800px;
+    margin: auto;
+}
+
+h1, h2, h3, h4 {
+    text-align: center;
+    padding: 10px
+}
