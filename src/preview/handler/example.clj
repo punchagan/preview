@@ -45,19 +45,27 @@
    :attrs {:value branch}
    :content branch})
 
-(defn- inject-preview-js [f]
+(defn- inject-preview-js [f repo-name]
   (html/deftemplate index-page f [s]
     [:body] (html/append s))
-  (html/defsnippet banner-template "../resources/preview/handler/example/banner.html"
-    [:#preview-banner]
-    [])
-  (index-page (banner-template)))
+  (index-page [{:tag :iframe
+                :attrs {:src (str "/banner?repo=" repo-name)
+                         :id "preview-banner"
+                         :width "100%"
+                         :height "100px"}}
+               {:tag :link
+                :attrs {:href "/css/banner.css"
+                        :rel "stylesheet"
+                        :type "text/css"}}]))
 
 (html/deftemplate main-template "../resources/preview/handler/example/example.html"
   [repos]
   [:head :title] (html/content "Watched Repositories")
   [:body :h1] (html/content "Watched Repositories")
   [:#repositories] (html/content (map make-repo-div repos)))
+
+(html/deftemplate banner-template "../resources/preview/handler/example/banner.html"
+  [])
 
 (html/deftemplate screenshot-template "../resources/preview/handler/example/screenshots.html"
   [repo-name]
@@ -78,8 +86,12 @@
                 (when (fs/exists? (File. repository-root file-path))
                   (let [f (io/file repository-root file-path)]
                     (if (= (fs/extension file-path) ".html")
-                      (inject-preview-js f)
+                      (inject-preview-js f (-> file-path fs/split first))
                       f))))
+
+           ;; Banner html
+           (GET "/banner" []
+                (banner-template))
 
            ;; Screenshot listing view
            (GET "/screenshots/:repo-name" [repo-name]

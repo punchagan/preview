@@ -15,8 +15,9 @@
 
 (defn- page-repo-name []
   (-> (.-href js/location)
-      (str/split  #"/")
-      butlast
+      (str/split  #"\?")
+      last
+      (str/split  #"\=")
       last))
 
 (defn- switch-branch [e]
@@ -50,10 +51,13 @@
 (defn screenshots-link []
   (let [repo-name (page-repo-name)
         url (str "/screenshots/" repo-name)]
-    [:a {:href url} "Screenshots"]))
+    [:a {:href url
+         :class "button button-outline float-right"
+         :target "_top"}
+     "Screenshots"]))
 
 (defn home-page [data]
-  [:div [:span "Preview"]
+  [:div [:span [:strong "Preview"]]
    [branch-drop-down (:branches @data) (:current-branch @data)]
    [screenshots-link]])
 
@@ -61,7 +65,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [home-page data] (.getElementById js/document "preview-app")))
+  (r/render [home-page data] (.getElementById js/document "preview-banner")))
 
 (defn get-repo-state []
   (go (let [url (str "/api/repo-state/" (page-repo-name))
