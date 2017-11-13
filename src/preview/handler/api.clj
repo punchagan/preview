@@ -1,5 +1,7 @@
 (ns preview.handler.api
-  (:require [preview.repository :refer [repo-state checkout]]
+  (:require [clojure.core.async :as async]
+            [preview.repository :refer [repo-state checkout walk-repo-commits]]
+            [preview.screenshot :refer [screenshot]]
             [compojure.core :refer :all]
             [integrant.core :as ig]
             [ring.util.response :refer [response content-type]]
@@ -18,4 +20,10 @@
 
            ;;FIXME: This should really be a POST - need to fix CSRF
            (GET "/branch/:repo-name/:branch" [repo-name branch]
-                (json-response (checkout repo-name branch)))))
+                (json-response (checkout repo-name branch)))
+
+
+           ;; Update screenshots
+           (GET "/update-screenshots/:repo-name" [repo-name]
+                (async/go (walk-repo-commits repo-name screenshot))
+                (json-response (repo-state repo-name)))))

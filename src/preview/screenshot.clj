@@ -12,7 +12,7 @@
   `(let [~'image-dir (str (io/file repository-root "screenshots" ~repo-name))]
      ~@body))
 
-(defn capture-screenshot [repo-name commit path]
+(defn- capture-screenshot [repo-name commit path]
   (let [url (str "http://localhost:3000/repository/" repo-name "/index.html")]
     (e/with-headless {} driver
       (e/go driver url)
@@ -23,8 +23,9 @@
         (e/set-window-size driver 1920 height))
       (e/screenshot driver path))))
 
-(defn screenshot-exists? [repo-name commit]
+(defn screenshot [repo-name commit]
   (with-image-dir repo-name
+    (fs/mkdirs image-dir)
     (let [path (io/file image-dir (str commit ".png"))]
       (when-not (fs/exists? path)
         (capture-screenshot repo-name commit path)))))
