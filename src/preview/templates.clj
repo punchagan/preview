@@ -26,23 +26,34 @@
 
 (defn- make-repo-link [repo-name]
   (let [url (str "/repository/" repo-name "/index.html")]
-    {:tag :a :attrs {:href url :class "column"} :content repo-name}))
+    {:tag :a :attrs {:href url} :content repo-name}))
+
+(defn- make-current-commit-info [author time]
+  {:tag :span :content [{:tag :span :attrs {:class "row"} :content author}
+                        {:tag :span :attrs {:class "row"} :content (str time)}]})
 
 (defn- make-repo-row [repo-path]
   (let [name (fs/base-name repo-path)
         repo-state (repo-state name)
-        preview-image (make-commit-image name (:current-sha repo-state)
+        sha (-> repo-state :current-commit :id)
+        time (-> repo-state :current-commit :time)
+        author (-> repo-state :current-commit :author)
+        preview-image (make-commit-image name sha
                                          :width 200 :height 200)
         url (str "/repository/" name "/index.html")]
-    {:tag :div :attrs {:class "row"}
-     :content
-     [{:tag :span :attrs {:class "column"} :content [preview-image]}
-      (make-repo-link name)]}))
+    {:tag :tr
+     :content [{:tag :td :content [preview-image]}
+               {:tag :td :content [(make-repo-link name)]}
+               {:tag :td :content [(make-current-commit-info author time)]}]}))
 
-(defn- make-repo-div [repo-path]
-  {:tag :div
-   :attrs {:class "repo"}
-   :content [(make-repo-row repo-path)]})
+(defn- make-repo-table [repos]
+  {:tag :table
+   :content [{:tag :thead
+              :content [{:tag :tr
+                         :content [{:tag :th :content "Last commit screenshot"}
+                                   {:tag :th :content "Repo name"}
+                                   {:tag :th :content "Last commit info"}]}]}
+             {:tag :tbody :content (map make-repo-row repos)}]})
 
 (defn- make-branch-option [branch]
   {:tag :option
@@ -67,7 +78,7 @@
   [:head :title] (html/content "Preview - Watched Repositories")
   [:body :h1] (html/content "Preview")
   [:#description] (html/content {:tag :p :content "Description of preview"})
-  [:#repositories] (html/content (map make-repo-div repos)))
+  [:#repositories] (html/content (make-repo-table repos)))
 
 (html/deftemplate banner-template "../resources/preview/handler/example/banner.html"
   [])

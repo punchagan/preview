@@ -16,11 +16,16 @@
 (defn- branches [repo]
   (map branch-name (git/git-branch-list repo)))
 
+(defn- munge-commit-info [repo commit]
+  (let [info (gq/commit-info repo commit)]
+    (-> info (select-keys [:author :time :id]) (assoc :time (str (:time info))))))
+
 (defn repo-state [repo-name]
   (with-repo repo-name
-    {:branches (branches repo)
-     :current-sha (-> repo git/git-log first branch-name)
-     :current-branch (git/git-branch-current repo)}))
+    (let [current-commit (-> repo git/git-log first)]
+      {:branches (branches repo)
+       :current-commit (munge-commit-info repo current-commit)
+       :current-branch (git/git-branch-current repo)})))
 
 (defn checkout [repo-name branch]
   (with-repo repo-name
