@@ -23,9 +23,16 @@
         (e/set-window-size driver 1920 height))
       (e/screenshot driver path))))
 
-(defn screenshot [repo-name commit]
-  (with-image-dir repo-name
-    (fs/mkdirs image-dir)
-    (let [path (io/file image-dir (str commit ".png"))]
-      (when-not (fs/exists? path)
-        (capture-screenshot repo-name commit path)))))
+(defn- url-path [path]
+  (str (apply io/file
+              (drop (-> repository-root fs/split count)
+                    (fs/split path)))))
+
+(defn screenshot [repo-path commit]
+  (let [repo-name (fs/base-name repo-path)
+        url-path (url-path repo-path)]
+    (with-image-dir repo-name
+      (fs/mkdirs image-dir)
+      (let [path (io/file image-dir (str commit ".png"))]
+        (when-not (fs/exists? path)
+          (capture-screenshot url-path commit path))))))
