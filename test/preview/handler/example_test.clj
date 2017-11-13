@@ -1,8 +1,8 @@
 (ns preview.handler.example-test
   (:require [clojure.test :refer :all]
             [integrant.core :as ig]
-            [ring.mock.request :as mock]
-            [preview.handler.example :as example]))
+            [preview.handler.views :as example]
+            [ring.mock.request :as mock]))
 
 (deftest smoke-test
   (testing "example page exists"

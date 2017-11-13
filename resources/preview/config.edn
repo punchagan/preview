@@ -6,10 +6,10 @@
  :duct.module/cljs {:main preview.client}
 
  :duct.router/cascading
- [#ig/ref :preview.handler/example
+ [#ig/ref :preview.handler/views
   #ig/ref :preview.handler/api]
 
- :preview.handler/example
+ :preview.handler/views
  {}
 
  :preview.handler/api

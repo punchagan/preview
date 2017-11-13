@@ -1,7 +1,7 @@
-;;FIXME: Better name for namespace
-(ns preview.handler.example
+(ns preview.handler.views
   (:require [preview.config :refer :all]
             [preview.templates :refer :all]
+            [clojure.java.io :as io]
             [compojure.core :refer :all]
             [clojure.java.io :as io]
             [integrant.core :as ig]
@@ -9,7 +9,7 @@
   (:import [java.io File]))
 
 
-(defmethod ig/init-key :preview.handler/example [_ options]
+(defmethod ig/init-key :preview.handler/views [_ options]
   (context "/" []
            ;; Listing of repositories
            (GET "/" []
