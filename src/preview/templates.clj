@@ -77,7 +77,7 @@
   [repos]
   [:head :title] (html/content "Preview - Watched Repositories")
   [:body :h1] (html/content "Preview")
-  [:#description] (html/content {:tag :p :content "Description of preview"})
+  [:#description] (html/content {:tag :p :content "Preview is a library to visually preview git repositories"})
   [:#repositories] (html/content (make-repo-table repos)))
 
 (html/deftemplate banner-template "../resources/preview/handler/example/banner.html"
