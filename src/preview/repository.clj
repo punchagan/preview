@@ -19,6 +19,7 @@
 (defn repo-state [repo-name]
   (with-repo repo-name
     {:branches (branches repo)
+     :current-sha (-> repo git/git-log first branch-name)
      :current-branch (git/git-branch-current repo)}))
 
 (defn checkout [repo-name branch]
