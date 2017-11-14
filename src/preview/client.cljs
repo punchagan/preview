@@ -20,6 +20,11 @@
       (str/split  #"\=")
       last))
 
+(defn- pathname-repo []
+  (-> (.-pathname js/location)
+      (str/split #"/")
+      last))
+
 (defn- switch-branch [e]
   (let [branch (-> e .-target .-value)]
     (go (let [url (str "/api/branch/" (page-repo-name) "/" branch)
@@ -31,6 +36,11 @@
               (.reload js/location true))
             ;; FIXME: Better error handling
             (prn response))))))
+
+(defn- async-update-screenshots [e]
+  (let [repo-name (pathname-repo)
+        url (str "/api/update-screenshots/" repo-name)]
+    (go (http/get url {}))))
 
 ;; -------------------------
 ;; Views
@@ -68,11 +78,22 @@
    [branch-drop-down (:branches @data) (:current-branch @data)]
    [screenshots-link]])
 
+(defn update-screenshots []
+  [:a
+   {:class "button button-clear column"
+    :href "#"
+    :on-click async-update-screenshots}
+   "Update Screenshots"])
+
+
 ;; -------------------------
 ;; Initialize app
 
-(defn mount-root []
+(defn mount-banner-root []
   (r/render [home-page data] (.getElementById js/document "preview-banner")))
+
+(defn mount-screenshot-root []
+  (r/render [update-screenshots] (.getElementById js/document "update-screenshots")))
 
 (defn get-repo-state []
   (go (let [url (str "/api/repo-state/" (page-repo-name))
@@ -81,8 +102,11 @@
           (reset! data (:body response))))))
 
 (defn init! []
-  (mount-root)
-  (get-repo-state))
+  (if (.getElementById js/document "preview-banner")
+    (do
+      (mount-banner-root)
+      (get-repo-state))
+    (mount-screenshot-root)))
 
 ;; FIXME: We are not using figwheel, etc., here. There might be a better way of
 ;; doing this.

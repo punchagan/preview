@@ -60,6 +60,20 @@
    :attrs {:value branch}
    :content branch})
 
+(defn- navigation [repo-name]
+  {:tag :div
+   :attrs {:class :row}
+   :content [{:tag :a
+              :attrs {:href "/"
+                      :class "button button-clear column"}
+              :content "Project list"}
+             {:tag :a
+              :attrs {:href (str "/repository/" repo-name "/index.html")
+                      :class "button button-clear column"}
+              :content "View Project"}
+             {:tag :span
+              :attrs {:id "update-screenshots"}}]})
+
 (defn inject-preview-js [f repo-name]
   (html/deftemplate index-page f [s]
     [:body] (html/append s))
@@ -87,4 +101,5 @@
   [repo-name]
   [:head :title] (html/content (str "Screenshots for " repo-name))
   [:body :h1] (html/content (str "Screenshots for " repo-name))
+  [:#nav-bar] (html/content (navigation repo-name))
   [:#screenshots] (html/content (commit-screenshots repo-name)))
