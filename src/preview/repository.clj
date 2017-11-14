@@ -48,7 +48,6 @@
           branch-commits (map #(map branch-name (git/git-log repo %)) branch-names)]
       (zipmap branch-names branch-commits))))
 
-;; FIXME: Use a clone of the repo for this?
 (defn walk-repo-commits
   "Walk over all commits in the repo, and execute the callable."
   [repo-name callable & args]
