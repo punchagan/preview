@@ -29,13 +29,12 @@
   (let [branch (-> e .-target .-value)]
     (go (let [url (str "/api/branch/" (page-repo-name) "/" branch)
               response (<! (http/get url {}))]
-          (prn (str "Switching to " branch))
           (if (= (:status response) 200)
             (do
               (reset! data (:body response))
               (.reload js/location true))
             ;; FIXME: Better error handling
-            (prn response))))))
+            (.log js/console response))))))
 
 (defn- async-update-screenshots [e]
   (let [repo-name (pathname-repo)
