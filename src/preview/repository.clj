@@ -5,13 +5,13 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [me.raynes.fs :as fs]
-            [preview.config :refer [repository-root]]
+            [preview.config :refer [preview-root]]
             [preview.screenshot :refer [screenshot]]
             [tentacles.repos :as tr])
   (:import java.io.FileNotFoundException))
 
 (defmacro with-repo [repo-name & body]
-  `(git/with-repo (str (io/file repository-root ~repo-name))
+  `(git/with-repo (str (io/file preview-root ~repo-name))
      ~@body))
 
 (defn- branch-name [branch]
@@ -27,7 +27,7 @@
       info)))
 
 (defn- clone [repo-name dest]
-  (let [path (str (io/file repository-root repo-name))]
+  (let [path (str (io/file preview-root repo-name))]
     (git/git-clone path dest)))
 
 (defn repo-state [repo-name & str?]
@@ -62,7 +62,7 @@
       (apply callable repo-path sha args)))
   (with-repo repo-name
     (let [commit-shas (map branch-name (gq/rev-list repo))
-          dest (-> repository-root (str "/.clones/") fs/temp-name (io/file repo-name) str)
+          dest (-> preview-root (str "/.clones/") fs/temp-name (io/file repo-name) str)
           cloned-repo (clone repo-name dest)
           clone-name (fs/base-name dest)
           v (doall (map walk-fn (repeat cloned-repo) commit-shas))]
@@ -85,7 +85,7 @@
     (filter #(has-index? username (:name %)) repos)))
 
 (defn- cloned? [repo]
-  (fs/exists? (str (io/file repository-root (:name repo)))))
+  (fs/exists? (str (io/file preview-root (:name repo)))))
 
 (defn- update-repo [metadata]
   (let [repo-name (:name metadata)]
@@ -96,7 +96,7 @@
 (defn- clone-repo [metadata]
   (let [repo-name (:name metadata)
         url (:git_url metadata)
-        local-dir (str (io/file repository-root repo-name))]
+        local-dir (str (io/file preview-root repo-name))]
     (println (str "Cloning " repo-name))
     (git/git-clone url local-dir)))
 
@@ -111,7 +111,7 @@
 ;; Preview local repository API
 
 (defn preview-repositories []
-  (let [dirs (fs/list-dir repository-root)
+  (let [dirs (fs/list-dir preview-root)
         repos (filter #(fs/exists? (fs/file % "index.html")) dirs)
         names (map #(fs/base-name %) repos)
         repo-metadata (map repo-state names)]

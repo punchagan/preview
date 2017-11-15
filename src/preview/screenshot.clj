@@ -1,6 +1,6 @@
 ;; Code for managing screenshots of repos
 (ns preview.screenshot
-  (:require [preview.config :refer [repository-root]]
+  (:require [preview.config :refer [preview-root]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [etaoin.api :as e]
@@ -8,8 +8,8 @@
 
 
 (defmacro with-image-dir [repo-name & body]
-  ;; FIXME: Use a different directory than repository-root
-  `(let [~'image-dir (str (io/file repository-root ".screenshots" ~repo-name))]
+  ;; FIXME: Use a different directory than preview-root
+  `(let [~'image-dir (str (io/file preview-root ".screenshots" ~repo-name))]
      ~@body))
 
 (defn- capture-screenshot [repo-name commit path]
@@ -25,7 +25,7 @@
 
 (defn- url-path [path]
   (str (apply io/file
-              (drop (-> repository-root fs/split count)
+              (drop (-> preview-root fs/split count)
                     (fs/split path)))))
 
 (defn screenshot [repo-path commit]

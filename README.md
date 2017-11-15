@@ -24,14 +24,19 @@ for the project.
 
 ### Configuration
 
-To configure the project, set `:repository-root` in the
-`dev/resources/local.edn` file, as below.
+To configure the project, set the following config in the
+`dev/resources/local.edn` file:
 
 ```clojure
 {:duct.core/include ["dev"]
- :preview.handler/views {:repository-root "/path/to/repo/root"
+ :preview.handler/views {:preview-root "/path/to/repo/root"
                          :preview-gh-user "UserName"}}
 ```
+
+- `:preview-root` is the directory used by Preview to save the cloned repos,
+  screenshots and other data.
+
+- `:preview-gh-user` is the GitHub username of the user to follow using Preview.
 
 ### Environment
 
