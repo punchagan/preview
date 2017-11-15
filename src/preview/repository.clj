@@ -19,27 +19,30 @@
 (defn- branches [repo]
   (map branch-name (git/git-branch-list repo)))
 
-(defn- munge-commit-info [repo commit]
-  (let [info (gq/commit-info repo commit)]
-    (-> info (select-keys [:author :time :id]) (assoc :time (str (:time info))))))
+(defn- munge-commit-info [repo commit str?]
+  (let [info (select-keys (gq/commit-info repo commit) [:author :time :id])]
+    (if str?
+      (assoc info :time (str (:time info)))
+      info)))
 
 (defn- clone [repo-name dest]
   (let [path (str (io/file repository-root repo-name))]
     (git/git-clone path dest)))
 
-(defn repo-state [repo-name]
+(defn repo-state [repo-name & str?]
   (try
     (with-repo repo-name
       (let [current-commit (-> repo git/git-log first)]
-        {:branches (branches repo)
-         :current-commit (munge-commit-info repo current-commit)
+        {:name repo-name
+         :branches (branches repo)
+         :current-commit (munge-commit-info repo current-commit str?)
          :current-branch (git/git-branch-current repo)}))
     (catch FileNotFoundException e (str "Not a git repository") {})))
 
 (defn checkout [repo-name branch]
   (with-repo repo-name
     (git/git-checkout repo branch)
-    (repo-state repo-name)))
+    (repo-state repo-name true)))
 
 (defn commits
   "Return the commits in a repo, per branch"
@@ -108,5 +111,9 @@
 
 (defn preview-repositories []
   (let [dirs (fs/list-dir repository-root)
-        repos (filter #(fs/exists? (fs/file % "index.html")) dirs)]
-    repos))
+        repos (filter #(fs/exists? (fs/file % "index.html")) dirs)
+        names (map #(fs/base-name %) repos)
+        repo-metadata (map repo-state names)]
+    (->> repo-metadata
+         (sort-by #(-> % :current-commit :time))
+         reverse)))

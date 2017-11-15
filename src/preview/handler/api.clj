@@ -16,7 +16,7 @@
 (defmethod ig/init-key :preview.handler/api [_ options]
   (context "/api" []
            (GET "/repo-state/:repo-name" [repo-name]
-                (json-response (repo-state repo-name)))
+                (json-response (repo-state repo-name true)))
 
            ;;FIXME: This should really be a POST - need to fix CSRF
            (GET "/branch/:repo-name/:branch" [repo-name branch]
@@ -25,7 +25,7 @@
            ;; Update screenshots
            (GET "/update-screenshots/:repo-name" [repo-name]
                 (async/go (walk-repo-commits repo-name screenshot))
-                (json-response (repo-state repo-name)))
+                (json-response (repo-state repo-name true)))
 
            ;; Update repositories
            (GET "/update-repos/:username" [username]

@@ -32,14 +32,13 @@
   {:tag :span :content [{:tag :span :attrs {:class "row"} :content author}
                         {:tag :span :attrs {:class "row"} :content (str time)}]})
 
-(defn- make-repo-row [repo-path]
-  (let [name (fs/base-name repo-path)
-        repo-state (repo-state name)
-        sha (-> repo-state :current-commit :id)
-        time (-> repo-state :current-commit :time)
-        author (-> repo-state :current-commit :author)
-        preview-image (make-commit-image name sha
-                                         :width 200 :height 200)
+(defn- make-repo-row [repo-info]
+  (let [name (:name repo-info)
+        sha (-> repo-info :current-commit :id)
+        time (-> repo-info :current-commit :time)
+        author (-> repo-info :current-commit :author)
+        preview-image (make-commit-image
+                       name sha :width 200 :height 200)
         url (str "/repository/" name "/index.html")]
     {:tag :tr
      :content [{:tag :td :content [preview-image]}
