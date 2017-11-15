@@ -1,7 +1,7 @@
 # Preview
 
 Preview is a graphical preview tool for git repositories. It is inspired by the
-NYT internal tool described by @mbostock in [this
+NYT internal tool described by [@mbostock](https://github.com/mbostock) in [this
 talk](https://www.youtube.com/watch?v=fThhbt23SGM).
 
 ## TODO
@@ -85,3 +85,5 @@ lein test
 ## Legal
 
 Copyright © 2017 Puneeth Chaganti
+
+LICENSE AGPL-3.0
