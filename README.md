@@ -29,7 +29,8 @@ To configure the project, set `:repository-root` in the
 
 ```clojure
 {:duct.core/include ["dev"]
- :preview.handler/views {:repository-root "/path/to/repository/root"}}
+ :preview.handler/views {:repository-root "/path/to/repo/root"
+                         :preview-gh-user "UserName"}}
 ```
 
 ### Environment
