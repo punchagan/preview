@@ -1,6 +1,7 @@
 (ns preview.handler.views
   (:require [preview.config :refer :all]
             [preview.templates :refer :all]
+            [preview.repository :refer [preview-repositories]]
             [clojure.java.io :as io]
             [compojure.core :refer :all]
             [clojure.java.io :as io]
@@ -13,8 +14,7 @@
   (context "/" []
            ;; Listing of repositories
            (GET "/" []
-                (let [repos (filter (fn [x] (fs/exists? (fs/file x "index.html")))
-                                    (fs/list-dir repository-root))]
+                (let [repos (preview-repositories)]
                   (main-template repos)))
 
            ;; Repository view

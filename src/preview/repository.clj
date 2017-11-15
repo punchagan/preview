@@ -103,3 +103,10 @@
 
 (defn clone-and-update-repos [username]
   (doall (map clone-or-update (repos-with-index username))))
+
+;; Preview local repository API
+
+(defn preview-repositories []
+  (let [dirs (fs/list-dir repository-root)
+        repos (filter #(fs/exists? (fs/file % "index.html")) dirs)]
+    repos))
