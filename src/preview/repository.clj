@@ -6,6 +6,7 @@
             [clojure.string :as str]
             [me.raynes.fs :as fs]
             [preview.config :refer [repository-root]]
+            [preview.screenshot :refer [screenshot]]
             [tentacles.repos :as tr])
   (:import java.io.FileNotFoundException))
 
@@ -117,3 +118,12 @@
     (->> repo-metadata
          (sort-by #(-> % :current-commit :time))
          reverse)))
+
+(defn update-preview-repos []
+  (let [repos (preview-repositories)]
+    (doall (map update-repo repos))))
+
+(defn update-screenshots []
+  (let [repos (preview-repositories)
+        names (map :name repos)]
+    (doall (map #(walk-repo-commits % screenshot) names))))

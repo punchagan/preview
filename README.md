@@ -6,8 +6,6 @@ talk](https://www.youtube.com/watch?v=fThhbt23SGM).
 
 ## TODO
 
-- Automatically track repositories, and update them
-- Update screenshots, automatically, when new commits are created
 - Allow viewing the repository at any commit
 - Support for multiple "projects", within a single repository?
 

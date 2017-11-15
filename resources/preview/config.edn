@@ -9,8 +9,7 @@
  [#ig/ref :preview.handler/views
   #ig/ref :preview.handler/api]
 
- :preview.handler/views
- {}
-
- :preview.handler/api
- {}}
+ :preview.handler/views {}
+ :preview.handler/api {}
+ :preview/background {}
+ }
