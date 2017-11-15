@@ -16,8 +16,11 @@
   (let [url (str "http://localhost:3000/repository/" repo-name "/index.html")]
     (e/with-headless {} driver
       (e/go driver url)
-      (e/wait-visible driver {:id :preview-banner})
-      (e/js-execute driver "document.querySelector('#preview-banner').remove()")
+      (try
+        (do
+          (e/wait-visible driver {:id :preview-banner})
+          (e/js-execute driver "document.querySelector('#preview-banner').remove()"))
+        (catch Exception e (str "Page not loaded for commit " commit)))
       (let [body-height "return Math.ceil(document.body.getBoundingClientRect().height)"
             height (e/js-execute driver body-height)]
         (e/set-window-size driver 1920 height))
