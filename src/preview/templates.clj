@@ -15,6 +15,15 @@
                                  :width (or width 300)
                                  :height height}}]}]})
 
+(defn- make-commit-image-with-link [repo-name commit & {:keys [width height] :or {width 300 }}]
+  {:tag :a
+   :content [{:tag :a
+              :attrs {:href (make-commit-image-url repo-name commit)}
+              :content [{:tag :img
+                         :attrs {:src (make-commit-image-url repo-name commit)
+                                 :width (or width 300)
+                                 :height height}}]}]})
+
 (defn- commit-screenshots [repo-name]
   (defn- make-repo-screenshots [[branch commits]]
     {:tag :div
@@ -22,7 +31,7 @@
      [{:tag :h2 :content branch}
       {:tag :div
        :content
-       (map #(make-commit-image repo-name %) commits)}]})
+       (map #(make-commit-image-with-link repo-name %) commits)}]})
   (let [repo-commits (commits repo-name)]
     (map make-repo-screenshots repo-commits)))
 
