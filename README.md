@@ -1,7 +1,7 @@
 # Preview
 
-Preview is a graphical preview tool for repositories. It is inspired by the NYT
-internal tool described by @mbostock in [this
+Preview is a graphical preview tool for git repositories. It is inspired by the
+NYT internal tool described by @mbostock in [this
 talk](https://www.youtube.com/watch?v=fThhbt23SGM).
 
 ## TODO
