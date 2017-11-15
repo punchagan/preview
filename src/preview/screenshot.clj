@@ -9,7 +9,7 @@
 
 (defmacro with-image-dir [repo-name & body]
   ;; FIXME: Use a different directory than repository-root
-  `(let [~'image-dir (str (io/file repository-root "screenshots" ~repo-name))]
+  `(let [~'image-dir (str (io/file repository-root ".screenshots" ~repo-name))]
      ~@body))
 
 (defn- capture-screenshot [repo-name commit path]

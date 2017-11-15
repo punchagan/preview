@@ -36,4 +36,4 @@
            ;; Screenshot files
            (GET "/screenshot/:repo-name/:image" [repo-name image]
                 ;; FIXME: screenshot-root should be separate
-                (io/file repository-root "screenshots" repo-name image))))
+                (io/file repository-root ".screenshots" repo-name image))))
