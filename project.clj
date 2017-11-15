@@ -12,7 +12,8 @@
                  [enlive "1.1.6"]
                  [etaoin "0.1.8-SNAPSHOT"]
                  [me.raynes/fs "1.4.6"]
-                 [reagent "0.7.0"]]
+                 [reagent "0.7.0"]
+                 [irresponsible/tentacles "0.6.1"]]
   :plugins [[duct/lein-duct "0.10.4"]]
   :main ^:skip-aot preview.main
   :resource-paths ["resources" "target/resources"]

@@ -5,7 +5,8 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [me.raynes.fs :as fs]
-            [preview.config :refer [repository-root]])
+            [preview.config :refer [repository-root]]
+            [tentacles.repos :as tr])
   (:import java.io.FileNotFoundException))
 
 (defmacro with-repo [repo-name & body]
@@ -22,7 +23,7 @@
   (let [info (gq/commit-info repo commit)]
     (-> info (select-keys [:author :time :id]) (assoc :time (str (:time info))))))
 
-(defn clone [repo-name dest]
+(defn- clone [repo-name dest]
   (let [path (str (io/file repository-root repo-name))]
     (git/git-clone path dest)))
 
@@ -63,3 +64,42 @@
           v (doall (map walk-fn (repeat cloned-repo) commit-shas))]
       (fs/delete-dir dest)
       v)))
+
+
+;; GitHub API
+
+(defn- has-index?
+  "Return true if the repo contains an index.html"
+  [user repo-name]
+  (contains? (tr/contents user repo-name "index.html" {:str? true}) :content))
+
+(defn- repos-with-index
+  "Return list of repos which have an index.html"
+  [username]
+  ;; FIXME: pagination
+  (let [repos (tr/user-repos username)]
+    (filter #(has-index? username (:name %)) repos)))
+
+(defn- cloned? [repo]
+  (fs/exists? (str (io/file repository-root (:name repo)))))
+
+(defn- update-repo [metadata]
+  (let [repo-name (:name metadata)]
+    (println (str "Updating " repo-name))
+    (with-repo repo-name
+      (git/git-fetch-all repo))))
+
+(defn- clone-repo [metadata]
+  (let [repo-name (:name metadata)
+        url (:git_url metadata)
+        local-dir (str (io/file repository-root repo-name))]
+    (println (str "Cloning " repo-name))
+    (git/git-clone url local-dir)))
+
+(defn- clone-or-update [repo]
+  (if (cloned? repo)
+    (update-repo repo)
+    (clone-repo repo)))
+
+(defn clone-and-update-repos [username]
+  (doall (map clone-or-update (repos-with-index username))))
