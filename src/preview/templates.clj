@@ -8,10 +8,12 @@
 
 (defn- make-commit-image [repo-name commit & {:keys [width height] :or {width 300 }}]
   {:tag :a
-   :content [{:tag :img
-              :attrs {:src (make-commit-image-url repo-name commit)
-                      :width (or width 300)
-                      :height height}}]})
+   :content [{:tag :a
+              :attrs {:href (str "/screenshots/" repo-name)}
+              :content [{:tag :img
+                         :attrs {:src (make-commit-image-url repo-name commit)
+                                 :width (or width 300)
+                                 :height height}}]}]})
 
 (defn- commit-screenshots [repo-name]
   (defn- make-repo-screenshots [[branch commits]]
