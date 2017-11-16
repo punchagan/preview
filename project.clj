@@ -2,19 +2,20 @@
   :description "Preview is a graphical preview tool for git repositories"
   :url "https://github.com/punchagan/preview"
   :min-lein-version "2.0.0"
-  :dependencies [[org.clojure/clojure "1.9.0-beta4"]
+  :dependencies [[org.clojure/clojure "1.9.0-RC1"]
+                 [org.clojure/clojurescript "1.9.946"]
                  [clj-jgit "0.8.10"]
-                 [cljs-http "0.1.44"]
                  [duct/core "0.6.1"]
-                 [duct/module.cljs "0.3.1"]
                  [duct/module.logging "0.3.1"]
                  [duct/module.web "0.6.3"]
                  [enlive "1.1.6"]
                  [etaoin "0.1.8-SNAPSHOT"]
                  [me.raynes/fs "1.4.6"]
-                 [reagent "0.7.0"]
                  [irresponsible/tentacles "0.6.1"]
-                 [tick "0.3.5"]]
+                 [tick "0.3.5"]
+                 [duct/module.cljs "0.3.1"]
+                 [cljs-http "0.1.44"]
+                 [reagent "0.8.0-alpha2"]]
   :plugins [[duct/lein-duct "0.10.4"]]
   :main ^:skip-aot preview.main
   :resource-paths ["resources" "target/resources"]
