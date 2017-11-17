@@ -10,12 +10,12 @@
             [tick.timeline :refer [periodic-seq timeline]]))
 
 (defmethod ig/init-key :preview/background [_ options]
+  (println "Starting background jobs...")
   (let [timeline-5-min (timeline (periodic-seq (now) (minutes 5)))
         timeline-hourly (timeline (periodic-seq (now) (minutes 60)))
         clone-schedule (schedule (fn [x] (clone-and-update-repos preview-gh-user)) timeline-hourly)
         update-schedule (schedule (fn [x] (update-preview-repos)) timeline-5-min)
         screenshot-schedule (schedule (fn [x] (update-screenshots)) timeline-5-min)]
-    (println "Starting background jobs...")
     (def schedules [clone-schedule update-schedule screenshot-schedule])
     (doall (map start schedules (repeat (clock-ticking-in-seconds))))))
 
