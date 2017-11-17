@@ -4,6 +4,7 @@
   :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.9.0-RC1"]
                  [org.clojure/clojurescript "1.9.946"]
+                 [org.clojure/tools.reader "1.1.0"]
                  [clj-jgit "0.8.10"]
                  [duct/core "0.6.1"]
                  [duct/module.logging "0.3.1"]
