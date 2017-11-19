@@ -13,6 +13,7 @@
      ~@body))
 
 (defn- capture-screenshot [repo-name commit path]
+  (println "Capturing screenshot for " repo-name " " commit)
   (let [url (str "http://localhost:3000/repository/" repo-name "/index.html")]
     (e/with-headless {} driver
       (e/go driver url)
@@ -20,7 +21,7 @@
         (do
           (e/wait-visible driver {:id :preview-banner})
           (e/js-execute driver "document.querySelector('#preview-banner').remove()"))
-        (catch Exception e (str "Page not loaded for commit " commit)))
+        (catch Exception e (println "Failred to capture screenshot for " repo-name " " commit)))
       (let [body-height "return Math.ceil(document.body.getBoundingClientRect().height)"
             height (e/js-execute driver body-height)]
         (e/set-window-size driver 1920 height))
