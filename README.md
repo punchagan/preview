@@ -4,15 +4,6 @@ Preview is a graphical preview tool for git repositories. It is inspired by the
 NYT internal tool described by [@mbostock](https://github.com/mbostock) in [this
 talk](https://www.youtube.com/watch?v=fThhbt23SGM).
 
-## TODO
-
-- Allow viewing the repository at any commit
-- Multiple users are not supported - git repo state gets over-written by some
-  actions. Use separate git repos per session?
-- Screenshots are not capturing each page properly? Need to wait until all
-  elements are loaded?
-- Support for multiple "projects", within a single repository?
-
 ## Developing
 
 ### Setup
