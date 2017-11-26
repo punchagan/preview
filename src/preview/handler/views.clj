@@ -1,7 +1,7 @@
 (ns preview.handler.views
   (:require [preview.config :refer :all]
             [preview.templates :refer :all]
-            [preview.repository :refer [preview-repositories]]
+            [preview.repository :refer [preview-repositories checkout]]
             [clojure.java.io :as io]
             [compojure.core :refer :all]
             [clojure.java.io :as io]
@@ -18,11 +18,15 @@
                   (main-template repos)))
 
            ;; Repository view
-           (GET "/repository/*" {{file-path :*} :route-params}
+           (GET "/repository/*" {{file-path :*} :route-params {commit "commit"} :query-params}
                 (when (fs/exists? (File. preview-root file-path))
-                  (let [f (io/file preview-root file-path)]
+                  (let [f (io/file preview-root file-path)
+                        repo-name (-> file-path fs/split first)]
                     (if (= (fs/extension file-path) ".html")
-                      (inject-preview-js f (-> file-path fs/split first))
+                      (do
+                        (when commit
+                          (checkout repo-name commit))
+                        (inject-preview-js f repo-name))
                       f))))
 
            ;; Banner html
