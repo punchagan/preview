@@ -21,6 +21,7 @@
               :attrs {:href (make-commit-image-url repo-name commit)}
               :content [{:tag :img
                          :attrs {:src (make-commit-image-url repo-name commit)
+                                 :class "repo-screenshot"
                                  :width (or width 300)
                                  :height height}}]}]})
 

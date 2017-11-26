@@ -19,3 +19,7 @@ h1, h2, h3, h4 {
 .name {
     padding-right: 20px;
 }
+
+.repo-screenshot {
+    vertical-align: top;
+}
