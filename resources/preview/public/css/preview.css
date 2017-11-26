@@ -20,6 +20,15 @@ h1, h2, h3, h4 {
     padding-right: 20px;
 }
 
-.repo-screenshot {
+.commit-screenshot {
+    text-align: center;
+    display: inline-block;
+}
+
+.commit-screenshot img {
     vertical-align: top;
+}
+
+.commit-screenshot a {
+    display: table-row;
 }

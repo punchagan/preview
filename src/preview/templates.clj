@@ -6,24 +6,26 @@
 (defn- make-commit-image-url [repo-name commit]
   (str "/screenshot/" repo-name "/" commit ".png"))
 
-(defn- make-commit-image [repo-name commit & {:keys [width height] :or {width 300 }}]
+(defn- make-commit-image [repo-name commit & {:keys [width height] :or {width 300}}]
   {:tag :a
-   :content [{:tag :a
-              :attrs {:href (str "/screenshots/" repo-name)}
-              :content [{:tag :img
-                         :attrs {:src (make-commit-image-url repo-name commit)
-                                 :width (or width 300)
-                                 :height height}}]}]})
+   :attrs {:href (str "/screenshots/" repo-name)}
+   :content [{:tag :img
+              :attrs {:src (make-commit-image-url repo-name commit)
+                      :width (or width 300)
+                      :height height}}]})
 
-(defn- make-commit-image-with-link [repo-name commit & {:keys [width height] :or {width 300 }}]
-  {:tag :a
+(defn- make-commit-image-with-link [repo-name commit & {:keys [width height] :or {width 300}}]
+  {:tag :span
+   :attrs {:class "column column-10 commit-screenshot"}
    :content [{:tag :a
               :attrs {:href (make-commit-image-url repo-name commit)}
               :content [{:tag :img
                          :attrs {:src (make-commit-image-url repo-name commit)
-                                 :class "repo-screenshot"
                                  :width (or width 300)
-                                 :height height}}]}]})
+                                 :height height}}]}
+             {:tag :a
+              :attrs {:href (str "/repository/" repo-name "/index.html?commit=" commit)}
+              :content (subs commit 1 8)}]})
 
 (defn- commit-screenshots [repo-name]
   (defn- make-repo-screenshots [[branch commits]]
